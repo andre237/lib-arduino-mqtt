@@ -6,6 +6,6 @@ SensorDeTemperatura::SensorDeTemperatura(int pin) : _dht(pin, DHTTYPE) {
     _dht.begin();
 }
 
-int SensorDeTemperatura::getValorAtual() {
+float SensorDeTemperatura::getValorAtual() {
     return _dht.readTemperature();
 }

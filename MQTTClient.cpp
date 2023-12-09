@@ -5,6 +5,7 @@
 #include "MQTTClient.h"
 
 #include <utility>
+#include <string>
 #include "Arduino.h"
 
 MQTTClient::MQTTClient(const char *ssid, const char *password, const char *mqttServerUrl) :
@@ -27,12 +28,27 @@ void MQTTClient::connect() {
             }
         }
     });
+
+    _reconnect();
+}
+
+void MQTTClient::_reconnect() {
+    std::string clientId = "esp8266-client-";
+    clientId.append(WiFi.macAddress().c_str());
+
+    while (!_mqttClient.connected()) {
+        if (_mqttClient.connect(clientId.c_str())) {
+            for (const auto& listener : _listeners) {
+                _mqttClient.subscribe(listener.topic);
+            }
+        } else {
+            delay(1000);
+        }
+    }
 }
 
 void MQTTClient::loop() {
-    if (!_mqttClient.connected()) {
-        connect();
-    }
+    _reconnect();
     _mqttClient.loop();
 }
 
@@ -44,5 +60,3 @@ void MQTTClient::addListener(const char *topic, MQTT_CALLBACK_SIGNATURE) {
     _listeners.push_back({topic, callback});
     _mqttClient.subscribe(topic);
 }
-
-

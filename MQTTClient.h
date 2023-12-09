@@ -3,7 +3,7 @@
 
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
-#include <functional>
+#include <vector>
 
 #if defined(ESP8266) || defined(ESP32)
 #include <functional>
@@ -34,6 +34,8 @@ private:
     };
 
     std::vector<Listener> _listeners;
+
+    void _reconnect();
 };
 
 

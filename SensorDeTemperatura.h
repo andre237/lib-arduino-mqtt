@@ -6,7 +6,7 @@
 class SensorDeTemperatura {
 public:
     SensorDeTemperatura(int pin);
-    int getValorAtual();
+    float getValorAtual();
 private:
     DHT _dht;
 };
